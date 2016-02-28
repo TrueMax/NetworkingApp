@@ -14,8 +14,10 @@ class SearchViewController: UIViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
-    var searchResults = [String]()
+    var searchResults = [SearchResult]()
+    var hasSearched = false
 
+    // MARK: - Main Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
@@ -23,20 +25,23 @@ class SearchViewController: UIViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
-
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        searchResults = [String]()
-        for i in 0...2 {
-            searchResults.append(String(format: "Some results %d for '%@'", i, searchBar.text!))
+        searchResults = [SearchResult]()
+        if searchBar.text! != "Justin bieber" {
+            for i in 0...2 {
+                let searchResult = SearchResult()
+                searchResult.name = String(format: "Some results %d for ", i)
+                searchResult.artistName = searchBar.text!
+                searchResults.append(searchResult)
+            }
+            hasSearched = true
+            tableView.reloadData()
         }
-        tableView.reloadData()
     }
     
     // наводим красоту 
@@ -47,22 +52,52 @@ extension SearchViewController: UISearchBarDelegate {
 }
 
 extension SearchViewController: UITableViewDataSource {
+    
+    // MARK: - TableView DataSource
     // метод объявляется без override, потому что root view controller = UIViewController, а не TableViewController (где родительские методы надо переопределять)
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        if !hasSearched {
+            return 0
+        } else if searchResults.count == 0 {
+            return 1
+        } else {
+            return searchResults.count
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellId = "SearchResultCell"
         var cell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier(cellId)
         if cell == nil {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellId)
         }
-        cell.textLabel!.text = searchResults[indexPath.row]
+        if searchResults.count == 0 {
+                cell.textLabel!.text = "(Nothing found)"
+            cell.detailTextLabel!.text = ""
+        } else {
+        
+        let searchResult = searchResults[indexPath.row]
+        cell.textLabel!.text = searchResult.name
+        cell.detailTextLabel!.text = searchResult.artistName
+            
+        }
         return cell
     }
 }
 
 extension SearchViewController: UITableViewDelegate {
+    
+    //MARK: - TableView Delegate 
+    
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+        if searchResults.count == 0 {
+            return nil
+        } else {
+            return indexPath
+        }
+    }
 
 }
