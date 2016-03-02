@@ -22,8 +22,8 @@
                     </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="enZ-Lf-qq1" firstAttribute="centerX" secondItem="0tl-7Z-4eO" secondAttribute="centerX" id="FrF-sw-kNO"/>
                     <constraint firstItem="enZ-Lf-qq1" firstAttribute="centerY" secondItem="0tl-7Z-4eO" secondAttribute="centerY" id="KG7-vn-Ew1"/>
-                    <constraint firstItem="enZ-Lf-qq1" firstAttribute="centerX" secondItem="0tl-7Z-4eO" secondAttribute="centerX" id="Vfv-iJ-QUB"/>
                 </constraints>
             </tableViewCellContentView>
             <point key="canvasLocation" x="299" y="280"/>
